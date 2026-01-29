@@ -23,7 +23,7 @@ O projeto está organizado em três microserviços principais:
 meu-ecommerce-microservicos/
 ├── inventory/        → Serviço de Inventário
 ├── order/           → Serviço de Pedidos
-├── product/         → Serviço de Produtos (em desenvolvimento)
+├── product/         → Serviço de Produtos
 └── docker-compose.yml
 ```
 
@@ -42,8 +42,11 @@ meu-ecommerce-microservicos/
 - **Dependências principais:** Spring Data JPA, Spring AMQP, Spring MVC
 
 #### **Product (Produtos)**
-- **Status:** Em desenvolvimento
-- **Descrição:** Gerenciamento do catálogo de produtos
+- **Porta:** 8083
+- **Descrição:** Gerenciamento do catálogo de produtos com busca e categorização
+- **Java Version:** 21
+- **Dependências principais:** Spring Data JPA, Spring AMQP, Spring MVC
+- **Status:** ✅ Concluído
 
 ## 🔧 Tecnologias Utilizadas
 
@@ -146,6 +149,14 @@ microservico/
 - `GET /api/inventory` - Verificar estoque
 - `POST /api/inventory/reserve` - Reservar produto
 
+### Product Service (8083)
+
+- `GET /api/products` - Listar todos os produtos
+- `POST /api/products` - Criar novo produto
+- `GET /api/products/{id}` - Buscar produto específico
+- `PUT /api/products/{id}` - Atualizar produto
+- `DELETE /api/products/{id}` - Deletar produto
+
 ## 📝 Configuração
 
 Cada microserviço possui seu arquivo `application.properties`:
@@ -179,17 +190,17 @@ mvn test
 
 Este projeto foi criado para consolidar conhecimentos em:
 
-- [ ] Spring Boot Web (REST APIs)
-- [ ] Spring Data JPA (Persistência de dados)
-- [ ] Spring AMQP (Mensageria)
-- [ ] Docker & Containerização
-- [ ] Arquitetura de Microserviços
-- [ ] Padrões de Design (DTO, Repository, Service)
+- [x] Spring Boot Web (REST APIs)
+- [x] Spring Data JPA (Persistência de dados)
+- [x] Spring AMQP (Mensageria)
+- [x] Docker & Containerização
+- [x] Arquitetura de Microserviços
+- [x] Padrões de Design (DTO, Repository, Service)
 - [ ] Testes Unitários e de Integração
 
 ## 🔄 Próximos Passos
 
-- [ ] Completar microserviço Product
+- [x] Completar microserviço Product
 - [ ] Implementar logging centralizado (ELK Stack)
 - [ ] Adicionar autenticação/autorização (OAuth2/JWT)
 - [ ] Implementar circuit breaker (Resilience4j)
@@ -216,4 +227,4 @@ Projeto de aprendizado pessoal.
 ---
 
 **Última atualização:** Janeiro de 2026  
-**Status:** Em desenvolvimento 🚧
+**Status:** Três microserviços funcionalidades ✅
