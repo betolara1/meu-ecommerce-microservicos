@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_USER: postgres  # Usuário padrão
       POSTGRES_PASSWORD: root  # Senha
-      POSTGRES_DB: product_db  # Cria um banco inicial padrão
+      POSTGRES_DB: order_db  # Cria um banco inicial padrão
     ports:
       - "5432:5432" # Porta padrão do Postgres
     volumes:
