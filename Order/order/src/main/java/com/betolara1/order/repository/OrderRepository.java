@@ -7,6 +7,5 @@ import com.betolara1.order.model.Order;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-
     
 }
