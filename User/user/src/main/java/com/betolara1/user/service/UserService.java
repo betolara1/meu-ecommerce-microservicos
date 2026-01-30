@@ -2,21 +2,20 @@ package com.betolara1.user.service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.betolara1.user.model.User;
 import com.betolara1.user.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor // Cria o construtor automaticamente para os campos final
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository; // Injeção de dependência via construtor, por isso usa o final
+    private final PasswordEncoder passwordEncoder; // Injeção de dependência via construtor, por isso usa o final
 
     public User saveUser(String username, String password) {
         String encodedPassword = passwordEncoder.encode(password);
@@ -27,7 +26,7 @@ public class UserService {
     }
 
     public Optional<User> findByUsername(String username) {
-        return userRepository.findByUserName(username);
+        return userRepository.findByUsername(username);
     }
     
     public Optional<User> findById(Long id) {
