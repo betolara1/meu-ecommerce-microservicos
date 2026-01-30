@@ -1,6 +1,16 @@
-
 services:
-  # --- Serviço 1: Banco de Dados (PostgreSQL) ---
+  inventory-service:
+    build: .
+    container_name: inventory-ms
+    ports:
+      - "8085:8080"
+    networks:
+      - ecommerce-net
+    depends_on:
+      - postgresdb
+      - rabbitmq
+
+      
   postgresdb:
     image: postgres:15-alpine  # Versão leve (Alpine)
     container_name: ecommerce-postgres

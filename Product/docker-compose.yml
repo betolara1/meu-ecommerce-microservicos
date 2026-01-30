@@ -1,5 +1,15 @@
-
 services:
+  product-service:
+    build: .
+    container_name: product-ms
+    ports:
+      - "8082:8080"
+    networks:
+      - ecommerce-net
+    depends_on:
+      - postgresdb
+      - rabbitmq
+
   # --- Serviço 1: Banco de Dados (PostgreSQL) ---
   postgresdb:
     image: postgres:15-alpine  # Versão leve (Alpine)
