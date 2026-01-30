@@ -1,0 +1,14 @@
+# O atributo include junta tudo em uma execução só
+include:
+  # 1. Carrega a infra primeiro (Onde a rede é criada)
+  - path: ./Product/docker-compose.yml
+
+  # 2. Carrega suas aplicações (Que usam a rede criada acima)
+  - path: ./Payments/docker-compose.yml
+  - path: ./User/docker-compose.yml
+  - path: ./Order/docker-compose.yml
+  - path: ./Inventory/docker-compose.yml
+  # (Adicione aqui quantos serviços tiver)
+
+# Opcional: Se quiser definir um nome para o projeto aparecer bonito no Docker Desktop
+name: ecommerce-completo
