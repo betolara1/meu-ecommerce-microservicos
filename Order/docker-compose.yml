@@ -3,45 +3,63 @@ services:
     build: .
     container_name: order-ms
     ports:
-      - "8084:8080"
+      - "8082:8080"
     networks:
       - ecommerce-net
     depends_on:
-      - postgresdb
-      - rabbitmq
+      order-postgres:
+        condition: service_healthy
+      order-rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://order-postgres:5432/order_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_RABBITMQ_HOST: order-rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
 
-  # --- Serviço 1: Banco de Dados (PostgreSQL) ---
-  postgresdb:
-    image: postgres:15-alpine  # Versão leve (Alpine)
-    container_name: ecommerce-postgres
+  order-postgres:
+    image: postgres:15-alpine
+    container_name: order-postgres
     restart: always
     environment:
-      POSTGRES_USER: postgres  # Usuário padrão
-      POSTGRES_PASSWORD: root  # Senha
-      POSTGRES_DB: order_db  # Cria um banco inicial padrão
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: order_db
     ports:
-      - "5432:5432" # Porta padrão do Postgres
+      - "5434:5432"
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data # O caminho interno muda em relação ao MySQL
+      - order-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-net
 
-    networks:           # <--- ADICIONADO
-      - ecommerce-net   # <--- ADICIONADO
-
-  # --- Serviço 2: Mensageria (RabbitMQ - Mantém igual) ---
-  rabbitmq:
+  order-rabbitmq:
     image: rabbitmq:3-management
-    container_name: ecommerce-rabbitmq
+    container_name: order-rabbitmq
     restart: always
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5674:5672"
+      - "15674:15672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
-    networks:           # <--- ADICIONADO
-      - ecommerce-net   # <--- ADICIONADO
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-net
 
 networks:
   ecommerce-net:
     external: true         # <--- Diz: "Não crie, use a que já existe"
     name: ecommerce-network # <--- Tem que ser O MESMO nome definido no Product
+
+volumes:
+  order-postgres-data:

@@ -3,46 +3,63 @@ services:
     build: .
     container_name: user-ms
     ports:
-      - "8081:8080"
+      - "8080:8080"
     networks:
       - ecommerce-net
     depends_on:
-      - postgresdb
-      - rabbitmq
+      user-postgres:
+        condition: service_healthy
+      user-rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://user-postgres:5432/user_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_RABBITMQ_HOST: user-rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
 
-  # --- Serviço 1: Banco de Dados (PostgreSQL) ---
-  postgresdb:
-    image: postgres:15-alpine  # Versão leve (Alpine)
-    container_name: ecommerce-postgres
+  user-postgres:
+    image: postgres:15-alpine
+    container_name: user-postgres
     restart: always
     environment:
-      POSTGRES_USER: postgres  # Usuário padrão
-      POSTGRES_PASSWORD: root  # Senha
-      POSTGRES_DB: user_db  # Cria um banco inicial padrão
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: user_db
     ports:
-      - "5432:5432" # Porta padrão do Postgres
+      - "5433:5432"
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data # O caminho interno muda em relação ao MySQL
+      - user-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-net
 
-    networks:           # <--- ADICIONADO
-      - ecommerce-net   # O banco entra na rede
-
-  # --- Serviço 2: Mensageria (RabbitMQ - Mantém igual) ---
-  rabbitmq:
+  user-rabbitmq:
     image: rabbitmq:3-management
-    container_name: ecommerce-rabbitmq
+    container_name: user-rabbitmq
     restart: always
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5673:5672"
+      - "15673:15672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
-    
-    networks:           # <--- ADICIONADO
-      - ecommerce-net   # A mensageria entra na rede
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-net
 
 networks:
   ecommerce-net:
     external: true         # <--- Diz: "Não crie, use a que já existe"
     name: ecommerce-network # <--- Tem que ser O MESMO nome definido no Product
+
+volumes:
+  user-postgres-data:

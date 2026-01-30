@@ -423,16 +423,29 @@ Este projeto foi criado para consolidar conhecimentos em:
 
 ## ⚠️ Troubleshooting
 
+### MAPEAMENTO DE PORTAS CORRETO
+
+| Serviço | Porta | Função |
+|---------|-------|--------|
+| **User Service** | `8080` | Autenticação |
+| **Inventory Service** | `8081` | Estoque |
+| **Order Service** | `8082` | Pedidos |
+| **Product Service** | `8083` | Produtos |
+| **Payments Service** | `8084` | Pagamentos |
+| **RabbitMQ** | `5672` | Mensageria |
+| **RabbitMQ Management** | `15672` | Web UI |
+
 ### Problema: Portas já em uso
 ```bash
 # Encontrar processo usando porta (exemplo: 8080)
-lsof -i :8080
-# Encerrar processo
-kill -9 <PID>
+netstat -ano | findstr :8080
+
+# Encerrar processo (substituir PID)
+taskkill /PID <PID> /F
 ```
 
 ### Problema: Banco de dados não conecta
-- Verificar se PostgreSQL está rodando
+- Verificar se PostgreSQL está rodando nos containers
 - Verificar credenciais em application.properties
 - Verificar se o banco de dados existe
 
@@ -449,9 +462,34 @@ docker-compose -f docker-compose.overview.yml down
 # Remover volumes (limpar dados)
 docker-compose -f docker-compose.overview.yml down -v
 
+# Limpar sistema
+docker system prune -f
+
+# Criar a Network de conexão local entre os microserviços
+docker network create ecommerce-network
+
 # Reiniciar
 docker-compose -f docker-compose.overview.yml up -d
 ```
+
+### 📊 Scripts de Diagnóstico
+
+**Windows PowerShell:**
+```powershell
+.\diagnostico.ps1
+```
+
+Este script verifica:
+- ✅ Status de todos os containers
+- ✅ Conectividade em cada porta
+- ✅ Endpoints HTTP respondendo
+- ✅ Teste de registro de usuário
+- ✅ Diagnóstico completo do sistema
+
+### 📄 Documentos de Referência
+
+- **DIAGNOSTICO_CONEXAO.md** - Análise completa dos problemas encontrados
+- **SWAGGER_GUIDE.md** - Guia completo sobre Swagger/OpenAPI
 
 ## 📊 Informações do Projeto
 
@@ -484,4 +522,4 @@ Projeto de aprendizado pessoal.
 ---
 
 **Última atualização:** Janeiro de 2026  
-**Status:** 5 microserviços operacionais ✅ | Docker Compose 100% funcional 🐳 | Pronto para produção 🚀
+**Status:** 5 microserviços operacionais ✅ | Docker Compose 100% funcional 🐳 | Problemas de conexão RESOLVIDOS 🔧 | Pronto para produção 🚀

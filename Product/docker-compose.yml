@@ -3,34 +3,44 @@ services:
     build: .
     container_name: product-ms
     ports:
-      - "8082:8080"
+      - "8083:8080"
     networks:
       - ecommerce-net
     depends_on:
-      - postgresdb
-      - rabbitmq
+      product-postgres:
+        condition: service_healthy
+      product-rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://product-postgres:5432/product_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_RABBITMQ_HOST: product-rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
 
-  # --- Serviço 1: Banco de Dados (PostgreSQL) ---
-  postgresdb:
-    image: postgres:15-alpine  # Versão leve (Alpine)
-    container_name: ecommerce-postgres
+  product-postgres:
+    image: postgres:15-alpine
+    container_name: product-postgres
     restart: always
     environment:
-      POSTGRES_USER: postgres  # Usuário padrão
-      POSTGRES_PASSWORD: root  # Senha
-      POSTGRES_DB: product_db  # Cria um banco inicial padrão
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: product_db
     ports:
-      - "5432:5432" # Porta padrão do Postgres
+      - "5432:5432"
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data # O caminho interno muda em relação ao MySQL
+      - product-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-net
 
-    networks:           # <--- ADICIONADO
-      - ecommerce-net   # O banco entra na rede
-
-  # --- Serviço 2: Mensageria (RabbitMQ - Mantém igual) ---
-  rabbitmq:
+  product-rabbitmq:
     image: rabbitmq:3-management
-    container_name: ecommerce-rabbitmq
+    container_name: product-rabbitmq
     restart: always
     ports:
       - "5672:5672"
@@ -38,11 +48,19 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
-    networks:           # <--- ADICIONADO
-      - ecommerce-net   # O RabbitMQ entra na rede
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-net
 
 # --- Definição da Rede ---
 networks:               # <--- SEÇÃO NOVA
   ecommerce-net:
     name: ecommerce-network  # Nome oficial que usaremos nos outros arquivos
     driver: bridge
+
+volumes:
+  product-postgres-data:
