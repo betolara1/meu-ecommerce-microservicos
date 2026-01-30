@@ -31,3 +31,17 @@ docker-compose -f docker-compose.overview.yml exec <serviço> bash: Permite que 
 docker images: Lista todas as imagens baixadas (como a do Eclipse Temurin ou Postgres).
 
 docker image prune: Remove imagens inúteis que ficam "soltas" após vários builds, liberando espaço no seu HD.
+
+
+
+# derrubar as imagens e subi-las de novo 
+docker-compose -f docker-compose.overview.yml down -v
+docker system prune -f
+docker-compose -f docker-compose.overview.yml build --no-cache
+docker-compose -f docker-compose.overview.yml up -d
+
+
+# remover algum container orfão
+docker-compose -f docker-compose.overview.yml down -v --remove-orphans
+docker system prune -f -a
+docker-compose -f docker-compose.overview.yml up -d

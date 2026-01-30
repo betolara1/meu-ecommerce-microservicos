@@ -11,5 +11,5 @@ ARG JAR_FILE=order/target/*.jar
 COPY --from=builder /build/${JAR_FILE} app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-Xmx512m", "-Xms256m", "-jar", "/app.jar"]
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -f http://localhost:8080/actuator/health || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD curl -f http://localhost:8080/ || exit 1
