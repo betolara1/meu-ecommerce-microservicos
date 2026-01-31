@@ -38,6 +38,7 @@ docker image prune: Remove imagens inúteis que ficam "soltas" após vários bui
 docker-compose -f docker-compose.overview.yml down -v
 docker system prune -f
 docker-compose -f docker-compose.overview.yml build --no-cache
+docker network create ecommerce-network
 docker-compose -f docker-compose.overview.yml up -d
 
 
