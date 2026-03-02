@@ -22,15 +22,22 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{username}")
-    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username) {
-        User user = userService.findByUsername(username).orElseThrow(() -> new NotFoundException("Usuario não encontrado com username: " + username));
-        return ResponseEntity.ok(new UserDTO(user));
-    }
+    @GetMapping("/{identifier}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable String identifier) {
+        User user;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        User user = userService.findById(id).orElseThrow(() -> new NotFoundException("Usuario não encontrado com ID: " + id));
+        // Verifica se a String contém apenas dígitos (0-9)
+        // Se for o caso, trata como ID do usuário
+        if (identifier.matches("\\d+")) { // Verifica se a string contém apenas dígitos (0-9)
+            Long id = Long.parseLong(identifier);
+            user = userService.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Usuário não encontrado com ID: " + id));
+        } else {
+            // Caso contrário, trata como username
+            user = userService.findByUsername(identifier)
+                    .orElseThrow(() -> new NotFoundException("Usuário não encontrado com username: " + identifier));
+        }
+
         return ResponseEntity.ok(new UserDTO(user));
     }
 

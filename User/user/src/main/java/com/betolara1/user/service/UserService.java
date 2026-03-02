@@ -1,8 +1,9 @@
 package com.betolara1.user.service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +28,7 @@ public class UserService implements UserDetailsService {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(encodedPassword);
+        newUser.setRole("ROLE_USER"); // Define um papel padrão para novos usuários
         return userRepository.save(newUser);
     }
 
@@ -61,9 +63,12 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado: " + username));
 
+        // Pega o papel do usuário ou define ROLE_USER se estiver nulo
+        String userRole = user.getRole() != null ? user.getRole() : "ROLE_USER";
+
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                new ArrayList<>());
+                Collections.singletonList(new SimpleGrantedAuthority(userRole)));
     }
 }
