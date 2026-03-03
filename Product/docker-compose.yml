@@ -9,13 +9,13 @@ services:
     depends_on:
       product-postgres:
         condition: service_healthy
-      product-rabbitmq:
+      rabbitmq:
         condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://product-postgres:5432/product_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: root
-      SPRING_RABBITMQ_HOST: product-rabbitmq
+      SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
 
   product-postgres:
@@ -31,35 +31,30 @@ services:
     volumes:
       - product-postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - ecommerce-net
 
-  product-rabbitmq:
-    image: rabbitmq:3-management
-    container_name: product-rabbitmq
-    restart: always
+  prometheus:
+    image: prom/prometheus
     ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - ecommerce-net
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
 
 # --- Definição da Rede ---
-networks:               # <--- SEÇÃO NOVA
+networks:
+  # <--- SEÇÃO NOVA
   ecommerce-net:
-    name: ecommerce-network  # Nome oficial que usaremos nos outros arquivos
+    name: ecommerce-network # Nome oficial que usaremos nos outros arquivos
     driver: bridge
 
 volumes:

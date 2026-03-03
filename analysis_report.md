@@ -6,32 +6,6 @@ Análise de todos os 5 microserviços (User, Product, Order, Payments, Inventory
 
 ## 🔴 Problemas Críticos (Segurança & Arquitetura)
 
-### 1. Autenticação incompleta — Sem JWT
-
-O login (`/auth/login`) valida senha mas **não retorna nenhum token**. Isso significa que:
-- Os outros 4 serviços não têm como saber quem é o usuário
-- Qualquer pessoa pode acessar Product, Order, Payments e Inventory diretamente
-- O [SecurityConfig](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/user/src/main/java/com/betolara1/user/config/SecurityConfig.java#13-35) bloqueia tudo exceto `/auth/register`, mas `/auth/login` também está bloqueado (precisa de autenticação para fazer login — paradoxo)
-
-> [!CAUTION]
-> **Impacto:** Qualquer endpoint dos outros serviços está 100% aberto. Sem JWT, a segurança do User Service é inútil para o ecossistema.
-
-**O que falta:** Gerar JWT no login, validar JWT em cada microserviço via filtro, e compartilhar a secret key.
-
----
-
-### 2. Endpoint `/auth/register` retorna a entidade [User](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/user/src/main/java/com/betolara1/user/model/User.java#11-32) com senha
-
-```java
-// UserController.java — linha 30-31
-User newUser = userService.saveUser(request.username(), request.password());
-return ResponseEntity.ok(newUser);  // ❌ retorna a senha hasheada no JSON!
-```
-
-O [saveUser](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/user/src/main/java/com/betolara1/user/service/UserService.java#20-27) retorna o [User](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/user/src/main/java/com/betolara1/user/model/User.java#11-32) completo (incluindo [password](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/user/src/main/java/com/betolara1/user/config/SecurityConfig.java#17-21) hasheado). Deveria retornar [UserDTO](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/user/src/main/java/com/betolara1/user/DTO/UserDTO.java#7-31) como o login faz.
-
----
-
 ### 3. Credenciais hardcoded em todos os arquivos
 
 Todos os [application.properties](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/user/src/main/resources/application.properties) e [docker-compose.yml](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/docker-compose.yml) contêm:
@@ -42,16 +16,6 @@ Todos os [application.properties](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C
 
 ---
 
-### 4. Cada microserviço tem sua própria instância RabbitMQ
-
-Cada [docker-compose.yml](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/docker-compose.yml) sobe um container RabbitMQ separado (5 instâncias no total: `user-rabbitmq`, `product-rabbitmq`, etc). Isso:
-- Consome 5x mais memória (~400MB cada = ~2GB só de RabbitMQ)
-- **Impossibilita a comunicação entre serviços** — cada um fala com seu próprio RabbitMQ isolado
-
-> [!IMPORTANT]
-> Deveria existir **UMA** instância de RabbitMQ compartilhada no [docker-compose.overview.yml](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/docker-compose.overview.yml), com todos os serviços apontando para ela.
-
----
 
 ### 5. Nenhum código de mensageria RabbitMQ implementado
 

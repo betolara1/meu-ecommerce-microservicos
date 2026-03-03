@@ -10,5 +10,25 @@ include:
   - path: ./Inventory/docker-compose.yml
   # (Adicione aqui quantos serviços tiver)
 
-# Opcional: Se quiser definir um nome para o projeto aparecer bonito no Docker Desktop
+  # Opcional: Se quiser definir um nome para o projeto aparecer bonito no Docker Desktop
 name: ecommerce-completo
+
+# 
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: shared-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "check_port_connectivity" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-net

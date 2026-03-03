@@ -9,13 +9,13 @@ services:
     depends_on:
       inventory-postgres:
         condition: service_healthy
-      inventory-rabbitmq:
+      rabbitmq:
         condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://inventory-postgres:5432/inventory_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: root
-      SPRING_RABBITMQ_HOST: inventory-rabbitmq
+      SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
 
   inventory-postgres:
@@ -31,25 +31,7 @@ services:
     volumes:
       - inventory-postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - ecommerce-net
-
-  inventory-rabbitmq:
-    image: rabbitmq:3-management
-    container_name: inventory-rabbitmq
-    restart: always
-    ports:
-      - "5675:5672"
-      - "15675:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -58,7 +40,7 @@ services:
 
 networks:
   ecommerce-net:
-    external: true         # <--- Diz: "Não crie, use a que já existe"
+    external: true # <--- Diz: "Não crie, use a que já existe"
     name: ecommerce-network # <--- Tem que ser O MESMO nome definido no Product
 
 volumes:
