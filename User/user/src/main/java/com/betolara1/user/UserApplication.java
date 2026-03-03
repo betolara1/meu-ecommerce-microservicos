@@ -3,7 +3,7 @@ package com.betolara1.user;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = { "com.betolara1.user", "com.betolara1.jwt_package" })
+@SpringBootApplication
 public class UserApplication {
 
 	public static void main(String[] args) {
