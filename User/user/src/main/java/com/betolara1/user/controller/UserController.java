@@ -55,4 +55,13 @@ public class UserController {
 
         return ResponseEntity.ok(userDTOUpdated);
     }
+
+    @GetMapping("/listAll")
+    public ResponseEntity<Page<User>> listar(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        
+        Page<User> list = userService.findAllUsers(page, size);
+        return ResponseEntity.ok(list);
+    }
 }

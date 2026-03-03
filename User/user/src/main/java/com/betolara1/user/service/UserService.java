@@ -23,6 +23,10 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository; // Injeção de dependência via construtor, por isso usa o final
     private final PasswordEncoder passwordEncoder; // Injeção de dependência via construtor, por isso usa o final
 
+    public Page<User> findAllUsers(int page, int size) {
+        return userRepository.findAll(PageRequest.of(page, size));
+    }
+
     public User saveUser(String username, String password) {
         String encodedPassword = passwordEncoder.encode(password);
         User newUser = new User();
