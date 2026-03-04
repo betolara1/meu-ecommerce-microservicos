@@ -1,4 +1,4 @@
-package com.betolara1.Payments.controller;
+package com.betolara1.payments.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.betolara1.Payments.dto.request.CreatePaymentsRequest;
-import com.betolara1.Payments.dto.request.UpdatePaymentsRequest;
-import com.betolara1.Payments.dto.response.PaymentDTO;
-import com.betolara1.Payments.exception.NotFoundException;
-import com.betolara1.Payments.model.Payment;
-import com.betolara1.Payments.service.PaymentService;
+import com.betolara1.payments.dto.request.CreatePaymentsRequest;
+import com.betolara1.payments.dto.request.UpdatePaymentsRequest;
+import com.betolara1.payments.dto.response.PaymentDTO;
+import com.betolara1.payments.exception.NotFoundException;
+import com.betolara1.payments.model.Payment;
+import com.betolara1.payments.service.PaymentService;
 
 import jakarta.validation.Valid;
 

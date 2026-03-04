@@ -1,4 +1,4 @@
-package com.betolara1.Payments.dto.response;
+package com.betolara1.payments.dto.response;
 
 import java.time.LocalDateTime;
 

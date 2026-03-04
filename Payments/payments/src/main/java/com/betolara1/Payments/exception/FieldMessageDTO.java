@@ -1,4 +1,4 @@
-package com.betolara1.Payments.exception;
+package com.betolara1.payments.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

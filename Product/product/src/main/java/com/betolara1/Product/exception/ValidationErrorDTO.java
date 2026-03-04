@@ -1,9 +1,9 @@
-package com.betolara1.Product.exception;
+package com.betolara1.product.exception;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.betolara1.Product.dto.response.StandardErrorDTO;
+import com.betolara1.product.dto.response.StandardErrorDTO;
 
 import lombok.Getter;
 

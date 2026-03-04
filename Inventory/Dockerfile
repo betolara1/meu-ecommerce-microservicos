@@ -3,15 +3,15 @@ FROM eclipse-temurin:21-jdk-jammy AS builder
 WORKDIR /build
 
 # 1. Copia o Maven Wrapper e o pom.xml primeiro
-COPY Inventory/.mvn/ .mvn
-COPY Inventory/mvnw Inventory/pom.xml ./
+COPY inventory/.mvn/ .mvn
+COPY inventory/mvnw inventory/pom.xml ./
 
 # 2. Baixa as dependências (camada pesada que será cacheada)
 # Isso só rodará de novo se o seu pom.xml mudar
 RUN ./mvnw dependency:go-offline
 
 # 3. Agora sim copia o código fonte e gera o JAR
-COPY Inventory/src ./src
+COPY inventory/src ./src
 RUN ./mvnw clean package -DskipTests
 
 

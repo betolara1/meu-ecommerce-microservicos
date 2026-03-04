@@ -1,8 +1,8 @@
-package com.betolara1.Product.dto.response;
+package com.betolara1.product.dto.response;
 
 import java.math.BigDecimal;
 
-import com.betolara1.Product.model.Product;
+import com.betolara1.product.model.Product;
 
 import lombok.Data;
 

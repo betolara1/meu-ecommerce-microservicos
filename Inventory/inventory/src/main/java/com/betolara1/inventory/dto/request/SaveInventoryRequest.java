@@ -1,7 +1,5 @@
 package com.betolara1.inventory.dto.request;
 
-import com.betolara1.inventory.model.Inventory;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -13,7 +11,4 @@ public class SaveInventoryRequest {
 
     @NotNull(message = "Quantity is required")
     private Integer quantity;
-    
-    @NotNull(message = "Status is required")
-    private Inventory.Status status;
 }

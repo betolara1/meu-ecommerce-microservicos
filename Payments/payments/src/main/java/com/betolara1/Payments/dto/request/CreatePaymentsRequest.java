@@ -1,9 +1,9 @@
-package com.betolara1.Payments.dto.request;
+package com.betolara1.payments.dto.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.betolara1.Payments.model.Payment;
+import com.betolara1.payments.model.Payment;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;

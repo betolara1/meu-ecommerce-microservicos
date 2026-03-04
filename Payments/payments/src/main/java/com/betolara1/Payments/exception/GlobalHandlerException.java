@@ -1,4 +1,4 @@
-package com.betolara1.Payments.exception;
+package com.betolara1.payments.exception;
 
 import java.time.LocalDateTime;
 
@@ -6,13 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import com.betolara1.Payments.dto.response.StandardErrorDTO;
-
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import com.betolara1.payments.dto.response.StandardErrorDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 

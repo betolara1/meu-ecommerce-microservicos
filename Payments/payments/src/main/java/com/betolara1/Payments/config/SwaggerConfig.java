@@ -1,4 +1,4 @@
-package com.betolara1.Payments.config;
+package com.betolara1.payments.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

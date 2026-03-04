@@ -1,4 +1,4 @@
-package com.betolara1.Product.model;
+package com.betolara1.product.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

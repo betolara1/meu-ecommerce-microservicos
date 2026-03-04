@@ -1,4 +1,4 @@
-package com.betolara1.Product.controller;
+package com.betolara1.product.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.betolara1.Product.dto.response.ProductDTO;
-import com.betolara1.Product.dto.request.CreateProductRequest;
-import com.betolara1.Product.dto.request.UpdateProductRequest;
-import com.betolara1.Product.exception.NotFoundException;
-import com.betolara1.Product.model.Product;
-import com.betolara1.Product.service.ProductService;
+import com.betolara1.product.dto.request.CreateProductRequest;
+import com.betolara1.product.dto.request.UpdateProductRequest;
+import com.betolara1.product.dto.response.ProductDTO;
+import com.betolara1.product.exception.NotFoundException;
+import com.betolara1.product.model.Product;
+import com.betolara1.product.service.ProductService;
 
 import jakarta.validation.Valid;
 

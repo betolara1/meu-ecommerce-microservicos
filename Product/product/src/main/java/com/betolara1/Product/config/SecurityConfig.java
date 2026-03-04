@@ -1,4 +1,4 @@
-package com.betolara1.Product.config;
+package com.betolara1.product.config;
 
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;

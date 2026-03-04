@@ -1,4 +1,4 @@
-package com.betolara1.Product.client;
+package com.betolara1.product.client;
 
 import lombok.Data;
 

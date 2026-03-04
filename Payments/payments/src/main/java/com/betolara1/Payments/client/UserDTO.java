@@ -1,4 +1,4 @@
-package com.betolara1.Payments.client;
+package com.betolara1.payments.client;
 
 import lombok.Data;
 

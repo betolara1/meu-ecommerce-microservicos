@@ -1,9 +1,9 @@
-package com.betolara1.Payments.exception;
+package com.betolara1.payments.exception;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.betolara1.Payments.dto.response.StandardErrorDTO;
+import com.betolara1.payments.dto.response.StandardErrorDTO;
 
 import lombok.Getter;
 

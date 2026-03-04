@@ -1,9 +1,9 @@
-package com.betolara1.Payments.dto.response;
+package com.betolara1.payments.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.betolara1.Payments.model.Payment;
+import com.betolara1.payments.model.Payment;
 
 import lombok.Data;
 

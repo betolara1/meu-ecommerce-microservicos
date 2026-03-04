@@ -1,4 +1,4 @@
-package com.betolara1.Product.config;
+package com.betolara1.product.config;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;

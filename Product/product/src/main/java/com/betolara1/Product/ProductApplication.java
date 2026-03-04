@@ -1,4 +1,4 @@
-package com.betolara1.Product;
+package com.betolara1.product;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

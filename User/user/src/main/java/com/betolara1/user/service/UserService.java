@@ -16,14 +16,15 @@ import com.betolara1.user.model.User;
 import com.betolara1.user.repository.UserRepository;
 import com.betolara1.user.exception.NotFoundException;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor // Cria o construtor automaticamente para os campos final
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository; // Injeção de dependência via construtor, por isso usa o final
     private final PasswordEncoder passwordEncoder; // Injeção de dependência via construtor, por isso usa o final
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     // Adicionado endpoint no user para listar todos os usuarios, com paginação 
     public Page<User> findAllUsers(int page, int size) {

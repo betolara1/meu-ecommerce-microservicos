@@ -1,4 +1,4 @@
-package com.betolara1.Payments.model;
+package com.betolara1.payments.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.betolara1.Payments.config;
+package com.betolara1.payments.config;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;

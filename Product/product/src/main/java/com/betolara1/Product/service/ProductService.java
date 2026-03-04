@@ -1,4 +1,4 @@
-package com.betolara1.Product.service;
+package com.betolara1.product.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -6,12 +6,12 @@ import org.springframework.data.domain.PageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.betolara1.Product.dto.request.CreateProductRequest;
-import com.betolara1.Product.dto.request.UpdateProductRequest;
-import com.betolara1.Product.dto.response.ProductDTO;
-import com.betolara1.Product.exception.NotFoundException;
-import com.betolara1.Product.model.Product;
-import com.betolara1.Product.repository.ProductRepository;
+import com.betolara1.product.dto.request.CreateProductRequest;
+import com.betolara1.product.dto.request.UpdateProductRequest;
+import com.betolara1.product.dto.response.ProductDTO;
+import com.betolara1.product.exception.NotFoundException;
+import com.betolara1.product.model.Product;
+import com.betolara1.product.repository.ProductRepository;
 
 @Service
 @RequiredArgsConstructor

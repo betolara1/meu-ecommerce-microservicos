@@ -1,4 +1,4 @@
-package com.betolara1.Payments;
+package com.betolara1.payments;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

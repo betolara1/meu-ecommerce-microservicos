@@ -1,4 +1,4 @@
-package com.betolara1.Product.config;
+package com.betolara1.product.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

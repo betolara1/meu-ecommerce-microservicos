@@ -1,4 +1,4 @@
-package com.betolara1.Product.dto.request;
+package com.betolara1.product.dto.request;
 
 import java.math.BigDecimal;
 

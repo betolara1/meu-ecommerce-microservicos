@@ -1,15 +1,15 @@
-package com.betolara1.Payments.service;
+package com.betolara1.payments.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.betolara1.Payments.dto.request.CreatePaymentsRequest;
-import com.betolara1.Payments.dto.request.UpdatePaymentsRequest;
-import com.betolara1.Payments.dto.response.PaymentDTO;
-import com.betolara1.Payments.exception.NotFoundException;
-import com.betolara1.Payments.model.Payment;
-import com.betolara1.Payments.repository.PaymentRepository;
+import com.betolara1.payments.dto.request.CreatePaymentsRequest;
+import com.betolara1.payments.dto.request.UpdatePaymentsRequest;
+import com.betolara1.payments.dto.response.PaymentDTO;
+import com.betolara1.payments.exception.NotFoundException;
+import com.betolara1.payments.model.Payment;
+import com.betolara1.payments.repository.PaymentRepository;
 
 @Service
 public class PaymentService {
