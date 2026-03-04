@@ -36,6 +36,12 @@ public class Order {
         PROCESSING,
         SHIPPED,
         DELIVERED,
-        CANCELLED
+        CANCELLED,
+        PAID,
+        FAILED
+    }
+
+    public BigDecimal getTotalPrice() {
+        return null;
     }
 }

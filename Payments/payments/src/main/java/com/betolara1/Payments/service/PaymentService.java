@@ -1,5 +1,7 @@
 package com.betolara1.payments.service;
 
+import java.math.BigDecimal;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.betolara1.payments.dto.request.CreatePaymentsRequest;
 import com.betolara1.payments.dto.request.UpdatePaymentsRequest;
 import com.betolara1.payments.dto.response.PaymentDTO;
+import com.betolara1.payments.dto.response.PaymentEvent;
 import com.betolara1.payments.exception.NotFoundException;
 import com.betolara1.payments.model.Payment;
 import com.betolara1.payments.repository.PaymentRepository;
@@ -95,5 +98,9 @@ public class PaymentService {
     public void deletePayment(Long id) {
         Payment payment = paymentRepository.findById(id).orElseThrow(() -> new NotFoundException("Pagamento não encontrado com ID: " + id));
         paymentRepository.delete(payment);
+    }
+
+    public PaymentEvent processPayment(Long orderId, BigDecimal amount) {
+        return new PaymentEvent(orderId, amount);
     }
 }

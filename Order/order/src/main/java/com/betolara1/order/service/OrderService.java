@@ -3,6 +3,7 @@ package com.betolara1.order.service;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.betolara1.order.dto.request.SaveOrderRequest;
 import com.betolara1.order.dto.request.UpdateOrderRequest;
 import com.betolara1.order.dto.response.OrderDTO;
+import com.betolara1.order.dto.response.PaymentEvent;
 import com.betolara1.order.exception.NotFoundException;
 import com.betolara1.order.model.Order;
 import com.betolara1.order.repository.OrderRepository;
@@ -18,8 +20,10 @@ import com.betolara1.order.repository.OrderRepository;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    public OrderService(OrderRepository orderRepository){
+    private final RabbitTemplate rabbitTemplate;
+    public OrderService(OrderRepository orderRepository, RabbitTemplate rabbitTemplate){
         this.orderRepository = orderRepository;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     public Page<OrderDTO> getAllOrder(int page, int size){
@@ -67,7 +71,17 @@ public class OrderService {
         order.setStatus(request.getStatus());
         order.setTotalAmount(request.getTotalAmount());
         order.setShippingAddress(request.getShippingAddress());
-        return orderRepository.save(order);
+
+        order.setStatus(Order.Status.PENDING); // Ainda não pagou
+        order = orderRepository.save(order); // update object with generated ID
+
+        // 2. Cria o objeto ("A Carta") que vai enviar. (Usa um DTO simplificado, não a Entidade)
+        PaymentEvent event = new PaymentEvent(order.getId(), order.getTotalAmount());
+
+        // 3. Joga no Correio (Nome da Exchange, Etiqueta, O Pacote JSON)
+        rabbitTemplate.convertAndSend("ecommerce.exchange", "payment.created", event);
+
+        return order;
     }
 
     public OrderDTO getOrderById(Long id){
@@ -99,6 +113,12 @@ public class OrderService {
     public void deleteOrder(Long id){
         Order finOrder = orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Pedido não encontrado com ID: " + id));
         orderRepository.delete(finOrder);
+    }
+
+    public void updateStatus(Long id, Order.Status status) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Pedido não encontrado com ID: " + id));
+        order.setStatus(status);
+        orderRepository.save(order);
     }
 
 }
