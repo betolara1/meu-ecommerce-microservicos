@@ -1,8 +1,6 @@
 package com.betolara1.inventory.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,30 +9,41 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.betolara1.inventory.dto.InventoryDTO;
+import com.betolara1.inventory.dto.request.SaveInventoryRequest;
+import com.betolara1.inventory.dto.request.UpdateInventoryRequest;
+import com.betolara1.inventory.dto.response.InventoryDTO;
 import com.betolara1.inventory.model.Inventory;
 import com.betolara1.inventory.service.InventoryService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/inventory")
 public class InventoryController {
 
-    @Autowired
-    private InventoryService inventoryService;
-
-    @GetMapping
-    public ResponseEntity<List<InventoryDTO>> getAllInventory(){
-        return ResponseEntity.ok(inventoryService.getAllInventory());
+    private final InventoryService inventoryService;
+    public InventoryController(InventoryService inventoryService){
+        this.inventoryService = inventoryService;
     }
 
-    @PostMapping
-    public ResponseEntity<InventoryDTO> createInventory(@RequestBody Inventory inventory){
-        Inventory newInventory = inventoryService.saveInventory(inventory);
-        InventoryDTO inventoryDTO = new InventoryDTO(newInventory);
+    @GetMapping("/listAll")
+    public ResponseEntity<Page<InventoryDTO>> getAllInventory(
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "10") int size){
+            
+        return ResponseEntity.ok(inventoryService.getAllInventory(page, size));
+    }
 
-        return ResponseEntity.ok(inventoryDTO);
+    @GetMapping("/status/{status}")
+    public ResponseEntity<Page<InventoryDTO>> getInventoryByStatus(
+        @PathVariable Inventory.Status status,
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "10") int size){
+            
+        return ResponseEntity.ok(inventoryService.getInventoryByStatus(status, page, size));
     }
 
     @GetMapping("/id/{id}")
@@ -49,18 +58,25 @@ public class InventoryController {
         return ResponseEntity.ok(inventorySku);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<InventoryDTO> updateInventory(@PathVariable Long id, @RequestBody Inventory inventory){
+    @PostMapping
+    public ResponseEntity<InventoryDTO> createInventory(@Valid @RequestBody SaveInventoryRequest inventory){
+        Inventory newInventory = inventoryService.saveInventory(inventory);
+        InventoryDTO inventoryDTO = new InventoryDTO(newInventory);
+
+        return ResponseEntity.ok(inventoryDTO);
+    }
+
+    @PutMapping("/id/{id}")
+    public ResponseEntity<InventoryDTO> updateInventory(@PathVariable Long id, @Valid @RequestBody UpdateInventoryRequest inventory){
         Inventory inventoryDb = inventoryService.updateInventory(id, inventory);
         InventoryDTO inventoryDTO = new InventoryDTO(inventoryDb);
 
         return ResponseEntity.ok(inventoryDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInventory(@PathVariable Long id){
+    @DeleteMapping("/id/{id}")
+    public ResponseEntity<String> deleteInventory(@PathVariable Long id){
         inventoryService.deleteInventory(id);
-
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Estoque deletado com sucesso!");
     }
 }

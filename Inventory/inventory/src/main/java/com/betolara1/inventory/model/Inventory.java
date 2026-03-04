@@ -1,5 +1,8 @@
 package com.betolara1.inventory.model;
 
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,13 +12,31 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "inventory_db")
+@Table(name = "inventory")
 public class Inventory {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String sku;
-    private int quantity;
-    private int reserved;
+
+    private Integer quantity;
+    private Status status;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public enum Status {
+        AVAILABLE,
+        RESERVED,
+        OUT_OF_STOCK
+    }
+
+    public Status reserved(){
+        if(this.quantity > 0)  return Status.AVAILABLE;
+        else                   return Status.OUT_OF_STOCK;
+    }
+
 }

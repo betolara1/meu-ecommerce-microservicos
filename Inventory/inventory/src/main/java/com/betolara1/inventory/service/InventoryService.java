@@ -1,55 +1,70 @@
 package com.betolara1.inventory.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.betolara1.inventory.dto.InventoryDTO;
+import com.betolara1.inventory.dto.request.SaveInventoryRequest;
+import com.betolara1.inventory.dto.request.UpdateInventoryRequest;
+import com.betolara1.inventory.dto.response.InventoryDTO;
+import com.betolara1.inventory.exception.NotFoundException;
 import com.betolara1.inventory.model.Inventory;
 import com.betolara1.inventory.repository.InventoryRepository;
 
 @Service
 public class InventoryService {
-    @Autowired
-    private InventoryRepository inventoryRepository;
 
-    public List<InventoryDTO> getAllInventory(){
-        return inventoryRepository.findAll()
-            .stream().map(InventoryDTO::new).collect(Collectors.toList());
+    private final InventoryRepository inventoryRepository;
+    public InventoryService(InventoryRepository inventoryRepository){
+        this.inventoryRepository = inventoryRepository;
     }
 
-    public Inventory saveInventory(Inventory inventory){
-        return inventoryRepository.save(inventory);
+    public Page<InventoryDTO> getAllInventory(int page, int size){
+        Page<Inventory> inventoryPage = inventoryRepository.findAll(PageRequest.of(page, size));
+        return inventoryPage.map(InventoryDTO::new);
+    }
+
+    public Page<InventoryDTO> getInventoryByStatus(Inventory.Status status, int page, int size){
+        Page<Inventory> inventoryPage = inventoryRepository.findByStatus(status, PageRequest.of(page, size));
+        return inventoryPage.map(InventoryDTO::new);
     }
 
     public InventoryDTO getInventoryById(Long id){
-        Inventory inventory = inventoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Inventory not found"));
+        Inventory inventory = inventoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Estoque não encontrado com ID: " + id));
         return new InventoryDTO(inventory);
     }
 
     public InventoryDTO getInventoryBySku(String sku){
-        Inventory inventory = inventoryRepository.findBySku(sku);
-        
-        if(inventory == null){
-            throw new RuntimeException("Inventory not found");
-        }
+        Inventory inventory = inventoryRepository.findBySku(sku).orElseThrow(() -> new NotFoundException("Estoque não encontrado com SKU: " + sku));
         return new InventoryDTO(inventory);
     }
 
-    public Inventory updateInventory(Long id, Inventory updateInventory){
-        Inventory findInventory = inventoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Inventory not found"));
+    public Inventory saveInventory(SaveInventoryRequest inventory){
+        Inventory newInventory = new Inventory();
+        newInventory.setSku(inventory.getSku());
+        newInventory.setQuantity(inventory.getQuantity());
+        newInventory.setStatus(newInventory.reserved());
+        return inventoryRepository.save(newInventory);
+    }
+
+    public Inventory updateInventory(Long id, UpdateInventoryRequest request){
+        Inventory findInventory = inventoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Estoque não encontrado com ID: " + id));
         
-        findInventory.setSku(updateInventory.getSku());
-        findInventory.setQuantity(updateInventory.getQuantity());
-        findInventory.setReserved(updateInventory.getReserved());
+        if(request.getSku() != null){
+            findInventory.setSku(request.getSku());
+        }
+        if(request.getQuantity() != null){
+            findInventory.setQuantity(request.getQuantity());
+        }
+        if(request.getStatus() != null){
+            findInventory.setStatus(request.getStatus());
+        }
 
         return inventoryRepository.save(findInventory);
     }
 
     public void deleteInventory(Long id){
-        Inventory findInventory = inventoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Inventory not found"));
+        Inventory findInventory = inventoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Estoque não encontrado com ID: " + id));
         inventoryRepository.delete(findInventory);
     }
 }
