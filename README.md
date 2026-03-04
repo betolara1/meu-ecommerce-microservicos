@@ -1,8 +1,8 @@
 # 🛒 E-commerce Microserviços
 
-Um projeto de e-commerce desenvolvido com **Spring Boot 4.0.1/4.0.2** e **Java 21**, utilizando arquitetura de **microserviços** para aprender e praticar várias funcionalidades avançadas do Spring Boot.
+Um projeto de e-commerce desenvolvido com **Spring Boot 3.4.3** e **Java 17**, utilizando arquitetura de **microserviços** para aprender e praticar várias funcionalidades avançadas do Spring Boot.
 
-> 🚧 **Status:** Em desenvolvimento - Apenas o **User Service** está concluído. RabbitMQ não está funcionando ainda.
+> ✅ **Status:** Fases 1 a 4 Concluídas — Todos os 5 microserviços foram completamente refatorados, padronizados e estão 100% operacionais. (Fase 5: Mensageria RabbitMQ em andamento).
 
 ## 📋 Sobre o Projeto
 
@@ -34,42 +34,42 @@ meu-ecommerce-microservicos/
 
 #### **User (Autenticação e Usuários)**
 - **Porta:** 8080
-- **Descrição:** Autenticação, registro de usuários e dados cadastrais
-- **Java Version:** 21
-- **Dependências principais:** Spring Data JPA, Spring AMQP, Spring Security
-- **Status:** ✅ Concluído
+- **Descrição:** Autenticação (JWT, Login, Registro), gestão de usuários
+- **Java Version:** 21 (Docker runtime) / 17 (Source)
+- **Dependências principais:** Spring Data JPA, Spring Security, JWT, Swagger, Actuator
+- **Status:** ✅ Concluído (Padrão Ouro M1)
 - **Banco de Dados:** PostgreSQL (user_db)
 
 #### **Product (Produtos)**
 - **Porta:** 8083
 - **Descrição:** CRUD de produtos, categorias e controle de preços
-- **Java Version:** 21
-- **Dependências principais:** Spring Data JPA, Spring AMQP, Spring MVC
-- **Status:** 🚧 Em construção
+- **Java Version:** 21 (Docker runtime) / 17 (Source)
+- **Dependências principais:** Spring Data JPA, Spring Web, Feign Client, Swagger, Actuator
+- **Status:** ✅ Concluído (Padrão Ouro M1)
 - **Banco de Dados:** PostgreSQL (product_db)
 
 #### **Inventory (Inventário)**
 - **Porta:** 8081
 - **Descrição:** Verifica disponibilidade, reserva e controle de estoque de produtos
-- **Java Version:** 21
-- **Dependências principais:** Spring Data JPA, Spring AMQP, Spring MVC
-- **Status:** 🚧 Em construção
+- **Java Version:** 21 (Docker runtime) / 17 (Source)
+- **Dependências principais:** Spring Data JPA, Spring Web, Feign Client, Swagger, Actuator
+- **Status:** ✅ Concluído (Padrão Ouro M1)
 - **Banco de Dados:** PostgreSQL (inventory_db)
 
 #### **Order (Pedidos)**
 - **Porta:** 8082
 - **Descrição:** Recebe pedidos, gerencia status da compra e histórico de transações
-- **Java Version:** 21
-- **Dependências principais:** Spring Data JPA, Spring AMQP, Spring MVC
-- **Status:** 🚧 Em construção
+- **Java Version:** 21 (Docker runtime) / 17 (Source)
+- **Dependências principais:** Spring Data JPA, Spring Web, Feign Client, Swagger, Actuator
+- **Status:** ✅ Concluído (Padrão Ouro M1)
 - **Banco de Dados:** PostgreSQL (order_db)
 
 #### **Payments (Pagamentos)**
 - **Porta:** 8084
 - **Descrição:** Processamento de transações financeiras e gestão de pagamentos
-- **Java Version:** 21
-- **Dependências principais:** Spring Data JPA, Spring AMQP, Spring MVC
-- **Status:** 🚧 Em construção
+- **Java Version:** 21 (Docker runtime) / 17 (Source)
+- **Dependências principais:** Spring Data JPA, Spring Web, Feign Client, Swagger, Actuator
+- **Status:** ✅ Concluído (Padrão Ouro M1)
 - **Banco de Dados:** PostgreSQL (payments_db)
 
 ## 🔧 Tecnologias Utilizadas
@@ -120,7 +120,7 @@ Isso iniciará:
 - ✅ Product Service (8083)
 - ✅ Payments Service (8084)
 
-**Status:** 🚧 Em desenvolvimento - Docker Compose em fase de ajustes (RabbitMQ pendente) 🐳
+**Status:** ✅ Docker Compose 100% funcional com os 5 microserviços e bancos independentes. 🐳
 
 ### 3. Executar Localmente (Desenvolvimento)
 
@@ -219,44 +219,65 @@ microservico/
 
 ### User Service (8080) - Autenticação e Usuários
 
+![Swagger User Service](assets/photos/user.png)
+
 - `POST /auth/register` - Registrar novo usuário
 - `POST /auth/login` - Fazer login
-- `GET /users/{id}` - Buscar perfil de usuário (protegido)
+- `GET /users/listAll` - Listar usuários com paginação
+- `GET /users/{identifier}` - Buscar perfil de usuário por ID numérico ou Username (protegido)
 - `PUT /users/{id}` - Atualizar dados do usuário (protegido)
 - `DELETE /users/{id}` - Excluir usuário (protegido)
 
 ### Product Service (8083)
 
-- `GET /products` - Listar todos os produtos
+![Swagger Product Service](assets/photos/Product.png)
+
+- `GET /products/listAll` - Listar todos os produtos (paginado)
+- `GET /products/{identifier}` - Buscar produto por ID ou Nome exato
+- `GET /products/category/{categoryId}` - Buscar produtos por ID da categoria
+- `GET /products/active/{active}` - Buscar produtos por status (ativo/inativo)
 - `POST /products` - Criar novo produto
-- `GET /products/id/{id}` - Buscar produto específico
-- `PUT /products/id/{id}` - Atualizar produto
-- `DELETE /products/id/{id}` - Deletar produto
+- `PUT /products/id/{id}` - Atualizar produto existente
+- `DELETE /products/id/{id}` - Deletar produto logicamente
 
 ### Inventory Service (8081)
 
-- `GET /inventory` - Listar todo o inventário
-- `POST /inventory` - Criar novo item de inventário
-- `GET /inventory/id/{id}` - Buscar item específico
+![Swagger Inventory Service](assets/photos/Inventory.png)
+
+- `GET /inventory/listAll` - Listar todo o inventário (paginado)
+- `GET /inventory/status/{status}` - Buscar inventário por status (AVAILABLE, OUT_OF_STOCK)
+- `GET /inventory/id/{id}` - Buscar item específico por ID
 - `GET /inventory/sku/{sku}` - Buscar item por SKU
-- `PUT /inventory/{id}` - Atualizar quantidade em estoque
-- `DELETE /inventory/{id}` - Remover item do inventário
+- `POST /inventory` - Criar novo item de inventário
+- `PUT /inventory/id/{id}` - Atualizar quantidade em estoque
+- `DELETE /inventory/id/{id}` - Remover item do inventário logicamente
 
 ### Order Service (8082)
 
-- `GET /order` - Listar todos os pedidos
-- `POST /order` - Criar novo pedido
-- `GET /order/{id}` - Buscar pedido específico
-- `PUT /order/{id}` - Atualizar status do pedido
-- `DELETE /order/{id}` - Cancelar pedido
+![Swagger Order Service](assets/photos/Order.png)
+
+- `GET /orders/listAll` - Listar todos os pedidos (paginado)
+- `GET /orders/customerId/{customerId}` - Buscar pedidos de um cliente
+- `GET /orders/status/{status}` - Buscar pedidos por status
+- `GET /orders/orderDate/{orderDate}` - Buscar pedidos por data (YYYY-MM-DD)
+- `GET /orders/id/{id}` - Buscar pedido específico
+- `POST /orders` - Criar novo pedido
+- `PUT /orders/id/{id}` - Atualizar status do pedido
+- `DELETE /orders/id/{id}` - Cancelar pedido logicamente
 
 ### Payments Service (8084)
 
-- `GET /payments` - Listar todas as transações
+![Swagger Payments Service](assets/photos/Payments.png)
+
+- `GET /payments/listAll` - Listar todos os pagamentos (paginado)
+- `GET /payments/status/{status}` - Buscar pagamentos por status
+- `GET /payments/paymentMethod/{paymentMethod}` - Buscar pagamentos por método (CREDIT_CARD, PIX, etc)
+- `GET /payments/id/{id}` - Buscar pagamento pelo seu ID interno
+- `GET /payments/orderId/{orderId}` - Buscar pagamento de um pedido específico
+- `GET /payments/transactionId/{transactionId}` - Buscar pagamento pelo ID da transação externa
 - `POST /payments` - Processar novo pagamento
-- `GET /payments/{id}` - Buscar transação específica
-- `PUT /payments/{id}` - Atualizar status do pagamento
-- `DELETE /payments/{id}` - Cancelar pagamento
+- `PUT /payments/id/{id}` - Atualizar status do pagamento
+- `DELETE /payments/id/{id}` - Cancelar pagamento logicamente
 
 ## 📝 Configuração
 
@@ -400,13 +421,14 @@ Este projeto foi criado para consolidar conhecimentos em:
 
 - [x] Spring Boot Web (REST APIs)
 - [x] Spring Data JPA (Persistência de dados)
-- [x] Spring AMQP (Mensageria)
-- [x] Spring Security (Autenticação)
-- [x] Docker & Containerização
-- [x] Arquitetura de Microserviços
-- [x] Padrões de Design (DTO, Repository, Service)
-- [x] Comunicação entre microserviços
-- [x] PostgreSQL
+- [x] Docker & Containerização (Multi-stage com Maven Wrapper)
+- [x] Padrões de Design (DTO Request/Response, Repository, Service)
+- [x] Tratamento Global de Exceções (ControllerAdvice + ValidationErrorDTO)
+- [x] Segurança e Tokens (Spring Security OAuth2 + JWT)
+- [x] Boas práticas em Entidades (BigDecimal, Validação de Dados, camelCase fixado)
+- [x] OpenAPI (Swagger) em todos os serviços
+- [x] Paginação e Updates Parciais (null check)
+- [ ] Comunicação Assíncrona via RabbitMQ (Em andamento)
 - [ ] Testes Unitários e de Integração
 
 ## 🔄 Próximos Passos
@@ -414,15 +436,14 @@ Este projeto foi criado para consolidar conhecimentos em:
 - [x] Completar microserviço Product
 - [x] Completar microserviço User com Spring Security
 - [x] Completar microserviço Payments
+- [x] Refatorar Order e Inventory para padrão de excelência (M1)
 - [x] Configurar Docker Compose (100% funcional com 5 serviços)
-- [ ] Implementar logging centralizado (ELK Stack)
-- [ ] Adicionar autenticação JWT com tokens
-- [ ] Implementar circuit breaker (Resilience4j)
-- [ ] Service discovery (Eureka/Consul)
-- [ ] API Gateway
+- [x] Adicionar autenticação JWT com tokens em todo o sistema
+- [x] Documentação Swagger/OpenAPI
+- [x] Health checks e métricas (Actuator + Prometheus)
+- [ ] Implementar integração com RabbitMQ (Producers e Consumers)
+- [ ] Implementar circuit breaker (Resilience4j) e API Gateway
 - [ ] Melhorar testes (Unit, Integration, E2E)
-- [ ] Documentação Swagger/OpenAPI
-- [ ] Health checks e métricas (Actuator)
 
 ## ⚠️ Troubleshooting
 
@@ -524,5 +545,5 @@ Projeto de aprendizado pessoal.
 
 ---
 
-**Última atualização:** Janeiro de 2026  
-**Status:** 🚧 Apenas User Service operacional | Outros serviços em construção | RabbitMQ não está funcionando ainda �
+**Última atualização:** Março de 2026  
+**Status:** ✅ 5 microserviços completamente refatorados, padronizados (DTOs, Validações, Exceções) e 100% operacionais | Segurança JWT implementada cruzada | RabbitMQ planejado para próxima fase. 🚀
