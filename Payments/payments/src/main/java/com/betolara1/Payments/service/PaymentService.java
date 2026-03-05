@@ -1,5 +1,7 @@
 package com.betolara1.payments.service;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
 import java.math.BigDecimal;
 
 import org.springframework.data.domain.Page;
@@ -9,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.betolara1.payments.dto.request.CreatePaymentsRequest;
 import com.betolara1.payments.dto.request.UpdatePaymentsRequest;
 import com.betolara1.payments.dto.response.PaymentDTO;
-import com.betolara1.payments.dto.response.PaymentEvent;
 import com.betolara1.payments.exception.NotFoundException;
 import com.betolara1.payments.model.Payment;
 import com.betolara1.payments.repository.PaymentRepository;
@@ -100,7 +101,17 @@ public class PaymentService {
         paymentRepository.delete(payment);
     }
 
-    public PaymentEvent processPayment(Long orderId, BigDecimal amount) {
-        return new PaymentEvent(orderId, amount);
+    public Payment processPayment(Long orderId, BigDecimal amount) {
+        Payment payment = new Payment();
+        payment.setOrderId(orderId);
+        payment.setAmount(amount);
+        payment.setStatus(Payment.Status.COMPLETED); // Simulado como aprovado
+        payment.setTransactionId(UUID.randomUUID().toString());
+        payment.setPaymentDate(LocalDateTime.now());
+        payment.setCreatedAt(LocalDateTime.now());
+        payment.setUpdatedAt(LocalDateTime.now());
+        payment.setPaymentMethod("CREDIT_CARD"); // Exemplo fixo
+
+        return paymentRepository.save(payment);
     }
 }

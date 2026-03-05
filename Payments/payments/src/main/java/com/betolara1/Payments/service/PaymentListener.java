@@ -5,6 +5,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
 import com.betolara1.payments.dto.response.PaymentEvent;
+import com.betolara1.payments.model.Payment;
 
 @Component
 public class PaymentListener {
@@ -27,8 +28,7 @@ public class PaymentListener {
             // 2. Aqui você simula o processamento do pagamento.
             // Exemplo: Salvar o pagamento no banco de dados do microsserviço Payments
             // OBS: Verifique o que o seu paymentService precisa para criar um pagamento!
-            // Exemplo fictício:
-            PaymentEvent processedPayment = paymentService.processPayment(event.orderId(), event.totalPrice());
+            Payment processedPayment = paymentService.processPayment(event.orderId(), event.totalPrice());
 
             System.out.println("✅ Pagamento aprovado com sucesso para o Pedido: " + event.orderId());
 
