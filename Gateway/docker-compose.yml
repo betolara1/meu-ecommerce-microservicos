@@ -1,0 +1,14 @@
+services:
+  gateway-service:
+    build: .
+    container_name: gateway-ms
+    ports:
+      - "8087:8080" # Você acessará o Gateway pela 8087
+    networks:
+      - ecommerce-net
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    environment:
+      # Diz ao Gateway onde o Eureka está dentro da rede do Docker
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:8761/eureka/

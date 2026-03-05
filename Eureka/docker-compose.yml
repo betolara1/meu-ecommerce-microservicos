@@ -1,0 +1,18 @@
+services:
+  eureka-server:
+    build: .
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - ecommerce-net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://eureka-server:8761/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  ecommerce-net:
+    external: true
+    name: ecommerce-network

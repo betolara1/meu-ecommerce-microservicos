@@ -8,6 +8,8 @@ include:
   - path: ./User/docker-compose.yml
   - path: ./Order/docker-compose.yml
   - path: ./Inventory/docker-compose.yml
+  - path: ./Eureka/docker-compose.yml
+  - path: ./Gateway/docker-compose.yml
   # (Adicione aqui quantos serviços tiver)
 
   # Opcional: Se quiser definir um nome para o projeto aparecer bonito no Docker Desktop
