@@ -3,16 +3,6 @@
 Análise de todos os 5 microserviços (User, Product, Order, Payments, Inventory) com recomendações priorizadas por impacto.
 
 
-### 5. Nenhum código de mensageria RabbitMQ implementado
-
-Apesar de `spring-boot-starter-amqp` estar no [pom.xml](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/user/pom.xml) de todos os serviços, **não existe**:
-- Nenhuma classe `@RabbitListener`
-- Nenhum `RabbitTemplate.convertAndSend()`
-- Nenhuma configuração de Exchanges, Queues ou Bindings
-
-
----
-
 ## 🟡 Melhorias de Robustez (Infraestrutura)
 
 ### 14. Sem API Gateway

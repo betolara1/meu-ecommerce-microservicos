@@ -1,5 +1,8 @@
 package com.betolara1.payments.service;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
@@ -36,6 +39,10 @@ public class PaymentListener {
             CreatePaymentsRequest savePayment = new CreatePaymentsRequest();
             savePayment.setOrderId(event.orderId());
             savePayment.setAmount(event.totalPrice());
+            savePayment.setStatus(Payment.Status.COMPLETED); // Intenção inicial
+            savePayment.setPaymentMethod("CREDIT_CARD");
+            savePayment.setTransactionId(UUID.randomUUID().toString());
+            savePayment.setPaymentDate(LocalDateTime.now());
             System.out.println("✅ Pagamento aprovado com sucesso para o Pedido: " + event.orderId());
 
             Payment processedPayment = paymentService.savePayment(savePayment);
