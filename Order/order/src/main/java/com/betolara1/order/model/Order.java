@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,11 +23,13 @@ public class Order {
 
     private Long customerId;
     private LocalDateTime orderDate;
+
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal totalAmount;
-    
+
     private String shippingAddress;
     private String sku;
     private Integer quantity;
