@@ -21,39 +21,6 @@
 
 ## 🔴 Problemas Críticos (Corrigir Primeiro)
 
-### 1. JWT sem Expiração
-**Arquivo:** [JwtUtil.java](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/user/src/main/java/com/betolara1/user/security/JwtUtil.java)
-
-O token JWT gerado **nunca expira**. Se alguém roubar um token, terá acesso eterno.
-
-```diff
- public String generateToken(String username) {
-     return Jwts.builder()
-             .setSubject(username)
-+            .setIssuedAt(new Date())
-+            .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 24h
-             .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-             .compact();
- }
-```
-
----
-
-### 2. Chave Secreta Hardcoded no Código
-**Arquivo:** [application.properties (User)](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/user/src/main/resources/application.properties#L5)
-
-```properties
-secret.key=minhachavesupersecretaecommerce2026!@#
-```
-
-Qualquer pessoa com acesso ao repositório GitHub pode gerar tokens válidos. **Use variáveis de ambiente:**
-
-```diff
--secret.key=minhachavesupersecretaecommerce2026!@#
-+secret.key=${JWT_SECRET_KEY}
-```
-
----
 
 ### 3. Senha Exposta no Endpoint [listAll](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/user/src/main/java/com/betolara1/user/controller/UserController.java#28-41)
 **Arquivo:** [UserController.java](file:///c:/Users/Ralf/Desktop/Programa%C3%A7%C3%A3o/meu-ecommerce-microservicos/User/user/src/main/java/com/betolara1/user/controller/UserController.java#L29)

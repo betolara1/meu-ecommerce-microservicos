@@ -15,7 +15,7 @@ include:
   # Opcional: Se quiser definir um nome para o projeto aparecer bonito no Docker Desktop
 name: ecommerce-completo
 
-# 
+#
 services:
   rabbitmq:
     image: rabbitmq:3-management
@@ -25,8 +25,8 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "check_port_connectivity" ]
       interval: 10s

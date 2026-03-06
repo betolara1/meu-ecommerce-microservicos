@@ -26,11 +26,11 @@ public class UserController {
     }
     
     @GetMapping("/listAll")
-    public ResponseEntity<Page<User>> listAll(
+    public ResponseEntity<Page<UserDTO>> listAll(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         
-        Page<User> list = userService.findAllUsers(page, size);
+        Page<UserDTO> list = userService.findAllUsers(page, size).map(UserDTO::new);
 
         if (list.isEmpty()) {
             throw new NotFoundException("Nenhum usuário cadastrado.");
