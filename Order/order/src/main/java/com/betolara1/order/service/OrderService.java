@@ -74,41 +74,8 @@ public class OrderService {
         return new OrderDTO(order);
     }
 
-    public Order updateOrder(Long id, UpdateOrderRequest request){
-        Order findOrder = orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Pedido não encontrado com ID: " + id));
-        if(request.getCustomerId() != null){
-            findOrder.setCustomerId(request.getCustomerId());
-        }
-        if(request.getOrderDate() != null){
-            findOrder.setOrderDate(request.getOrderDate());
-        }
-        if(request.getStatus() != null){
-            findOrder.setStatus(request.getStatus());
-        }
-        if(request.getTotalAmount() != null){
-            findOrder.setTotalAmount(request.getTotalAmount());
-        }
-        if(request.getShippingAddress() != null){
-            findOrder.setShippingAddress(request.getShippingAddress());
-        }
-
-        return orderRepository.save(findOrder);
-    }
-
-    public void deleteOrder(Long id){
-        Order finOrder = orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Pedido não encontrado com ID: " + id));
-        orderRepository.delete(finOrder);
-    }
-
-    // Método para atualizar o status do pedido
-    // Usado pelo OrderListener para atualizar o status do pedido
-    public Order updateStatus(Long id, Order.Status status) {
-        Order order = orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Pedido não encontrado com ID: " + id));
-        order.setStatus(status);
-        return orderRepository.save(order);
-    }
-
     // Método para salvar o pedido e enviar para o rabbitMQ
+    @Transactional
     public Order saveOrder(SaveOrderRequest request) {
         // 1. Validação síncrona do Cliente via Feign
         UserDTO user = userClient.getUserById(request.getCustomerId());
@@ -133,6 +100,43 @@ public class OrderService {
         rabbitTemplate.convertAndSend("ecommerce.exchange", "payment.created", event);
 
         return order;
+    }
+
+    @Transactional
+    public Order updateOrder(Long id, UpdateOrderRequest request){
+        Order findOrder = orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Pedido não encontrado com ID: " + id));
+        if(request.getCustomerId() != null){
+            findOrder.setCustomerId(request.getCustomerId());
+        }
+        if(request.getOrderDate() != null){
+            findOrder.setOrderDate(request.getOrderDate());
+        }
+        if(request.getStatus() != null){
+            findOrder.setStatus(request.getStatus());
+        }
+        if(request.getTotalAmount() != null){
+            findOrder.setTotalAmount(request.getTotalAmount());
+        }
+        if(request.getShippingAddress() != null){
+            findOrder.setShippingAddress(request.getShippingAddress());
+        }
+
+        return orderRepository.save(findOrder);
+    }
+
+    @Transactional
+    public void deleteOrder(Long id){
+        Order finOrder = orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Pedido não encontrado com ID: " + id));
+        orderRepository.delete(finOrder);
+    }
+
+    // Método para atualizar o status do pedido
+    // Usado pelo OrderListener para atualizar o status do pedido
+    @Transactional
+    public Order updateStatus(Long id, Order.Status status) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Pedido não encontrado com ID: " + id));
+        order.setStatus(status);
+        return orderRepository.save(order);
     }
 
 }

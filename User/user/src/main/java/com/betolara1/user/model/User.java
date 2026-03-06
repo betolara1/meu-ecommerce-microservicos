@@ -30,4 +30,14 @@ public class User {
     private String email;
     private String phone;
     private String address;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    
+    @PrePersist
+    protected void onCreate() { this.createdAt = LocalDateTime.now(); }
+
+    @PreUpdate
+    protected void onUpdate() { this.updatedAt = LocalDateTime.now(); }
+
+
 }

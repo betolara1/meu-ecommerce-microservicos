@@ -59,25 +59,7 @@ public class ProductService {
         return new ProductDTO(product);
     }
 
-    public Product updateProduct(Long id, UpdateProductRequest request) {
-        Product findProduct = productRepository.findById(id).orElseThrow(() -> new NotFoundException("Produto não encontrado com ID: " + id));
-
-        if (request.getSku() != null) findProduct.setSku(request.getSku());
-        if (request.getName() != null) findProduct.setName(request.getName());
-        if (request.getDescription() != null) findProduct.setDescription(request.getDescription());
-        if (request.getPrice() != null) findProduct.setPrice(request.getPrice());
-        if (request.getCategoryId() != null) findProduct.setCategoryId(request.getCategoryId());
-        if (request.getImageUrl() != null) findProduct.setImageUrl(request.getImageUrl());
-        if (request.getActive() != null) findProduct.setActive(request.getActive());
-
-        return productRepository.save(findProduct);
-    }
-
-    public void deleteProduct(Long id){
-        Product findProduct = productRepository.findById(id).orElseThrow(() -> new NotFoundException("Produto não encontrado com ID: " + id));
-        productRepository.delete(findProduct);
-    }
-
+    @Transactional
     public Product saveProduct(CreateProductRequest request) {
         Product product = new Product();
         product.setSku(request.getSku());
@@ -94,5 +76,26 @@ public class ProductService {
         rabbitTemplate.convertAndSend("ecommerce.exchange", "product.created", event);
 
         return product;
+    }
+
+    @Transactional
+    public Product updateProduct(Long id, UpdateProductRequest request) {
+        Product findProduct = productRepository.findById(id).orElseThrow(() -> new NotFoundException("Produto não encontrado com ID: " + id));
+
+        if (request.getSku() != null) findProduct.setSku(request.getSku());
+        if (request.getName() != null) findProduct.setName(request.getName());
+        if (request.getDescription() != null) findProduct.setDescription(request.getDescription());
+        if (request.getPrice() != null) findProduct.setPrice(request.getPrice());
+        if (request.getCategoryId() != null) findProduct.setCategoryId(request.getCategoryId());
+        if (request.getImageUrl() != null) findProduct.setImageUrl(request.getImageUrl());
+        if (request.getActive() != null) findProduct.setActive(request.getActive());
+
+        return productRepository.save(findProduct);
+    }
+
+    @Transactional
+    public void deleteProduct(Long id){
+        Product findProduct = productRepository.findById(id).orElseThrow(() -> new NotFoundException("Produto não encontrado com ID: " + id));
+        productRepository.delete(findProduct);
     }
 }

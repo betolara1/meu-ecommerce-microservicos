@@ -39,6 +39,19 @@ public class InventoryService {
         return new InventoryDTO(inventory);
     }
 
+    @Transactional
+    public Inventory saveInventory(SaveInventoryRequest inventory){
+        Inventory newInventory = new Inventory();
+        newInventory.setSku(inventory.getSku());
+        newInventory.setQuantity(inventory.getQuantity());
+        newInventory.setStatus(newInventory.reserved());
+
+        Inventory savedInventory = inventoryRepository.save(newInventory);
+
+        return savedInventory;
+    }
+
+    @Transactional
     public Inventory updateInventory(Long id, UpdateInventoryRequest request){
         Inventory findInventory = inventoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Estoque não encontrado com ID: " + id));
         
@@ -55,19 +68,9 @@ public class InventoryService {
         return inventoryRepository.save(findInventory);
     }
 
+    @Transactional
     public void deleteInventory(Long id){
         Inventory findInventory = inventoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Estoque não encontrado com ID: " + id));
         inventoryRepository.delete(findInventory);
-    }
-
-    public Inventory saveInventory(SaveInventoryRequest inventory){
-        Inventory newInventory = new Inventory();
-        newInventory.setSku(inventory.getSku());
-        newInventory.setQuantity(inventory.getQuantity());
-        newInventory.setStatus(newInventory.reserved());
-
-        Inventory savedInventory = inventoryRepository.save(newInventory);
-
-        return savedInventory;
     }
 }

@@ -28,26 +28,32 @@ public class UserService implements UserDetailsService {
 
     // Adicionado endpoint no user para listar todos os usuarios, com paginação 
     public Page<User> findAllUsers(int page, int size) {
-        return userRepository.findAll(PageRequest.of(page, size));
+        return userRepository.findAll(PageRequest.of(page, size).orElseThrow(() -> new NotFoundException("Nenhum usuario encontrado")));
     }
 
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("Usuario não encontrado com username: " + username));
+    }
+
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Usuario não encontrado com ID: " + id));
+    }
+
+    @Transactional
     public User saveUser(String username, String password) {
+        if(userRepository.findByUsername(username).isPresent()) {
+            throw new StandardErrorDTO("Usuário já cadastrado.");
+        }
+
         String encodedPassword = passwordEncoder.encode(password);
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(encodedPassword);
-        newUser.setRole("ADMIN"); // Define um papel padrão para novos usuários
+        newUser.setRole("USER"); // Define um papel padrão para novos usuários
         return userRepository.save(newUser);
     }
 
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
-    }
-
+    @Transactional
     public User updateUser(Long id, User updatedUser) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Usuario não encontrado com ID: " + id));
 
@@ -59,6 +65,7 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public void deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Usuario não encontrado com ID: " + id));
         userRepository.delete(user);
