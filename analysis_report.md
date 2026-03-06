@@ -5,17 +5,6 @@ Análise de todos os 5 microserviços (User, Product, Order, Payments, Inventory
 
 ## 🟡 Melhorias de Robustez (Infraestrutura)
 
-### 15. Sem Circuit Breaker (Resilience4j)
-
-Se um serviço cair, os outros continuam chamando e acumulam timeout. 
-
-**O que falta:**
-- Circuit Breaker para interromper chamadas a serviços indisponíveis
-- Retry com backoff exponencial
-- Fallback methods
-
----
-
 ### 18. Sem testes reais
 
 Todos os 5 serviços têm apenas o teste padrão gerado pelo Spring Initializr:
@@ -44,3 +33,6 @@ Isso permite que o Hibernate altere o schema do banco em produção. **Use `vali
 | # | Melhoria | Descrição |
 |---|----------|-----------|
 | 30 | **CORS** | Nenhum serviço configura CORS para permitir acesso de frontends |
+
+
+APRENDER JUnit
