@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import com.betolara1.order.client.UserClient;
+import com.betolara1.order.client.UserDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,9 +23,12 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final RabbitTemplate rabbitTemplate;
-    public OrderService(OrderRepository orderRepository, RabbitTemplate rabbitTemplate){
+    private final UserClient userClient;
+
+    public OrderService(OrderRepository orderRepository, RabbitTemplate rabbitTemplate, UserClient userClient) {
         this.orderRepository = orderRepository;
         this.rabbitTemplate = rabbitTemplate;
+        this.userClient = userClient;
     }
 
     public Page<OrderDTO> getAllOrder(int page, int size){
@@ -104,7 +109,11 @@ public class OrderService {
     }
 
     // Método para salvar o pedido e enviar para o rabbitMQ
-    public Order saveOrder(SaveOrderRequest request){
+    public Order saveOrder(SaveOrderRequest request) {
+        // 1. Validação síncrona do Cliente via Feign
+        UserDTO user = userClient.getUserById(request.getCustomerId());
+        System.out.println("👤 Cliente Validado: " + user.getName());
+
         Order order = new Order();
         order.setCustomerId(request.getCustomerId());
         order.setOrderDate(request.getOrderDate());

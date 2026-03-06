@@ -7,6 +7,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 
+// Interceptor para adicionar o token do usuário no header da requisição
 @Component
 public class FeignInterceptor implements RequestInterceptor {
     @Override
