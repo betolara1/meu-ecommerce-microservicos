@@ -5,17 +5,6 @@ Análise de todos os 5 microserviços (User, Product, Order, Payments, Inventory
 
 ## 🟡 Melhorias de Robustez (Infraestrutura)
 
-### 14. Sem API Gateway
-
-Cada serviço expõe sua própria porta (8080-8084). 
-
-**Um API Gateway (Spring Cloud Gateway):**
-- Centraliza a entrada em uma única porta
-- Faz roteamento inteligente (`/api/users/**` → User Service)
-- Centraliza autenticação JWT
-- Permite rate limiting, CORS, logging, date
----
-
 ### 15. Sem Circuit Breaker (Resilience4j)
 
 Se um serviço cair, os outros continuam chamando e acumulam timeout. 
